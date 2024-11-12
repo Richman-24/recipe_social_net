@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from recipe.models import Recipe, RecipeIngredientAmount, Tag, Ingredient
+from recipe.models import Recipe, RecipeIngredient, Tag, Ingredient
 
-class RecipeIngredientAmountInline(admin.TabularInline):
-    model = RecipeIngredientAmount
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeIngredient
     extra = 1 
     
 @admin.register(Tag)
@@ -17,6 +17,6 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = [RecipeIngredientAmountInline]
+    inlines = [RecipeIngredientInline]
     list_display = ["name", "author", 'pub_date', 'is_active']
     search_fields = ('name',)

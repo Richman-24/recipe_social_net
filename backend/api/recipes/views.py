@@ -1,12 +1,11 @@
-from django.shortcuts import render
-
-
-from api.serializers import RecipeSerializer
-from recipe.models import Recipe
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
 from rest_framework.viewsets import GenericViewSet
 from rest_framework import mixins
+
+from api.recipes.serializers import RecipeSerializer
+from recipes.models import Recipe
+
+
 class CreateListRetrievePatchViewSet(mixins.CreateModelMixin,
                                      mixins.DestroyModelMixin,
                                      mixins.ListModelMixin,

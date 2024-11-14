@@ -6,20 +6,19 @@ from recipes.models import Recipe, RecipeIngredient, Tag
 class TagSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='ingredient_id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    unit = serializers.ReadOnlyField(source='ingredient.unit')
     
     class Meta:
-        fields = ('id', 'name', 'unit', 'amount')
+        fields = ('id', 'name', )
         model = RecipeIngredient
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='ingredient_id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    unit = serializers.ReadOnlyField(source='ingredient.unit')
+    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
     
     class Meta:
-        fields = ('id', 'name', 'unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
         model = RecipeIngredient
 
 

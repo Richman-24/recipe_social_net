@@ -31,3 +31,14 @@ class UserListSerializer(serializers.ModelSerializer):
             'email', 'id', 'username',
             'first_name', 'last_name'
         )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор админа для модели User."""
+
+    class Meta:
+        model = User
+        fields = (
+            'email', 'id', 'username',
+            'first_name', 'last_name'
+        )

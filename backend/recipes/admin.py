@@ -13,10 +13,10 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ["name", "unit"]
+    list_display = ["name", "measurement_unit"]
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = [RecipeIngredientInline]
-    list_display = ["name", "author", 'pub_date', 'is_active']
+    list_display = ["name", "author", 'pub_date', 'is_published']
     search_fields = ('name',)

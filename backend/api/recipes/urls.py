@@ -3,10 +3,12 @@ from rest_framework.routers import DefaultRouter
 
 from api.recipes import views
 
-router_v1 = DefaultRouter()
-router_v1.register('recipes', views.RecipeViewSet, basename='recipes')
+recipe_router = DefaultRouter()
+recipe_router.register('recipes', views.RecipeViewSet, basename='recipes')
+recipe_router.register('ingredients', views.IngredientsViewSet, basename='ingredients')
+recipe_router.register('tags', views.TagsViewSet, basename='tags')
 
 
 recipe_urls = [
-    path('', include(router_v1.urls))
+    path('', include(recipe_router.urls))
 ]

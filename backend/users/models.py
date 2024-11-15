@@ -37,7 +37,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=USER_LENGTH_LIMIT, verbose_name="Имя")
     last_name = models.CharField(max_length=USER_LENGTH_LIMIT, verbose_name="Фамилия")
 
-    image = models.ImageField(upload_to='media/user_images/', blank=True, null=True, verbose_name="Аватар")
+    avatar = models.ImageField(upload_to='media/user_images/', blank=True, null=True, verbose_name="Аватар")
     email = models.EmailField(max_length=EMAIL_LENGTH_LIMIT, unique=True)
 
     USERNAME_FIELD = 'email'
@@ -62,7 +62,7 @@ class Follow(models.Model):
         related_name='follower',
         verbose_name='Подписчик',
     )
-    following = models.ForeignKey(
+    author = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
         related_name='following',
@@ -74,9 +74,13 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = [
             models.UniqueConstraint(
-                fields=('user', 'following'),
+                fields=('user', 'author'),
                 name='unique_following'
-            )
+            ),
+            models.CheckConstraint(
+                check=~models.Q(author=models.F('user')),
+                name='check_follower_author',
+            ),
         ]
 
     def __str__(self):

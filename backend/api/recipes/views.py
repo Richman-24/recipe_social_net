@@ -21,3 +21,16 @@ class RecipeViewSet(CreateListRetrievePatchViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly,]
+
+
+class RecipeViewSet(GenericViewSet):
+    ...
+
+
+class IngredientsViewSet(GenericViewSet):
+    ...
+
+
+class TagsViewSet(GenericViewSet):
+    ...
+

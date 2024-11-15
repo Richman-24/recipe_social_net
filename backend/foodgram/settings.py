@@ -3,7 +3,8 @@ from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+from foodgram.constants import PER_PAGE_LIMIT
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -118,6 +119,20 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6,
+    'PAGE_SIZE': PER_PAGE_LIMIT,
 
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'HIDE_USERS': False,
+    'PERMISSIONS': {
+        'user': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
+        'user_list': ['rest_framework.permissions.AllowAny'],
+    },
+    'SERIALIZERS': {
+        'user': 'api.users.serializers.UserSerializer',
+        'current_user': 'api.users.serializers.UserSerializer',
+        'user_create': 'api.users.serializers.UserCreateSerializer',
+    }
 }

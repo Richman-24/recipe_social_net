@@ -1,15 +1,20 @@
 from rest_framework import serializers
 
-from recipes.models import Recipe, RecipeIngredient, Tag
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 
-class TagSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source='ingredient_id')
-    name = serializers.ReadOnlyField(source='ingredient.name')
+class TagSerializer(serializers.ModelSerializer): #OK
     
     class Meta:
-        fields = ('id', 'name', )
-        model = RecipeIngredient
+        model = Tag
+        fields = ('id', 'name', 'slug')
+
+
+class IngredientSerializer(serializers.ModelSerializer): #OK
+
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
@@ -18,8 +23,8 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
     
     class Meta:
-        fields = ('id', 'name', 'measurement_unit', 'amount')
         model = RecipeIngredient
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -27,10 +32,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         source='recipeingredient_set', many=True)
 
     class Meta:
+        model = Recipe
         fields = (
             'id', 'tag', 'author', 'ingredient',
             'name', 'description', 'cooking_time', 'image'
         )
         read_only_fields = ('author',)
-        model = Recipe
 

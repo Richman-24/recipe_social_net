@@ -10,7 +10,7 @@ from foodgram.constants import PER_PAGE_LIMIT
 User = get_user_model()
 
 
-class Base64ImageField(serializers.ImageField):
+class Base64ImageField(serializers.ImageField): #OK
 
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):
@@ -20,10 +20,10 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer): #OK
     
     is_subscribed = serializers.SerializerMethodField()
-    avatar = Base64ImageField(allow_null=True, required=False)
+    avatar = Base64ImageField(allow_null=True)
 
     class Meta:
         model = User
@@ -40,7 +40,7 @@ class UserSerializer(serializers.ModelSerializer):
             return False
         return request.user.follower.filter(author=obj).exists()
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class CustomUserCreateSerializer(UserCreateSerializer): #OK
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -55,7 +55,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         )
 
 
-class ShortRecipeSerializer(serializers.ModelSerializer):
+class ShortRecipeSerializer(serializers.ModelSerializer): #OK
 
     class Meta:
         model = Recipe

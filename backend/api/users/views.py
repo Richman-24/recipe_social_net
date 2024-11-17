@@ -20,17 +20,20 @@ class CustomUserViewSet(UserViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     pagination_class = CustorPageNumberPagination
 
-    @action(['get'], detail=False, permission_classes=(IsAuthenticated,), url_path='me',)
+    @action(
+            methods=('GET',),
+            detail=False,
+            permission_classes=(IsAuthenticated,),
+            url_path='me',)
     def me(self, request, *args, **kwargs):
         self.get_object = self.get_instance
         return self.retrieve(request, *args, **kwargs)
 
     @action(
-        ['put'],
-        detail=False,
-        permission_classes=(IsAdminAuthorOrReadOnly,),
-        url_path='me/avatar',
-    )
+            methods=('PUT',),
+            detail=False,
+            permission_classes=(IsAdminAuthorOrReadOnly,),
+            url_path='me/avatar',)
     def avatar(self, request, *args, **kwargs):
         serializer = AvatarSerializer(
             instance=request.user,
@@ -47,8 +50,8 @@ class CustomUserViewSet(UserViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        detail=False,
         methods=('GET',),
+        detail=False,
         permission_classes=(IsAuthenticated,),
         url_path='subscriptions',
         url_name='subscriptions',
@@ -66,7 +69,7 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
+        methods=('POST', 'DELETE'),
     )
     def subscribe(self, request, id):
         user = request.user

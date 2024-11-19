@@ -7,8 +7,8 @@ from api.users.serializers import AvatarSerializer, SubscriberDetailSerializer, 
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 
-from api.users.permissions import IsAdminAuthorOrReadOnly
-from api.users.pagination import CustorPageNumberPagination
+from api.permissions import IsAdminAuthorOrReadOnly
+from api.pagination import CustorPageNumberPagination
 from rest_framework import status
 
 from users.models import Follow

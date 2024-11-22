@@ -1,4 +1,3 @@
-import base64
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -10,8 +9,9 @@ from foodgram.constants import PER_PAGE_LIMIT
 
 User = get_user_model()
 
-class UserSerializer(serializers.ModelSerializer): #OK
-    
+
+class UserSerializer(serializers.ModelSerializer):
+
     is_subscribed = serializers.SerializerMethodField()
     avatar = Base64ImageField(allow_null=True)
 
@@ -30,7 +30,8 @@ class UserSerializer(serializers.ModelSerializer): #OK
             return False
         return request.user.follower.filter(author=obj).exists()
 
-class CustomUserCreateSerializer(UserCreateSerializer): #OK
+
+class CustomUserCreateSerializer(UserCreateSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -45,8 +46,7 @@ class CustomUserCreateSerializer(UserCreateSerializer): #OK
         )
 
 
-class ShortRecipeSerializer(serializers.ModelSerializer): #OK
-
+class ShortRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
@@ -54,7 +54,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer): #OK
 
 class SubscriberDetailSerializer(serializers.ModelSerializer):
     """Сериализатор карточки автора для подписчика"""
-    
+
     email = serializers.ReadOnlyField(source='author.email')
     id = serializers.ReadOnlyField(source='author.id')
     username = serializers.ReadOnlyField(source='author.username')
@@ -98,13 +98,15 @@ class SubscriberDetailSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj.author).count()
-    
+
+
 class AvatarSerializer(serializers.ModelSerializer):
     avatar = Base64ImageField(allow_null=True)
 
     class Meta:
         model = User
         fields = ('avatar',)
+
 
 class SubscriberSerializer(serializers.ModelSerializer):
 

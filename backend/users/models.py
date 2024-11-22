@@ -10,6 +10,7 @@ from foodgram.constants import (
 
 username_validator = UnicodeUsernameValidator()
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -32,19 +33,34 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(email, password, **extra_fields)
 
-class User(AbstractUser):
-    username = models.CharField(max_length=USER_LENGTH_LIMIT, unique=True, validators=(username_validator,))
-    first_name = models.CharField(max_length=USER_LENGTH_LIMIT, verbose_name="Имя")
-    last_name = models.CharField(max_length=USER_LENGTH_LIMIT, verbose_name="Фамилия")
 
-    avatar = models.ImageField(upload_to='media/user_images/', blank=True, null=True, verbose_name="Аватар")
+class User(AbstractUser):
+    username = models.CharField(
+        max_length=USER_LENGTH_LIMIT,
+        unique=True,
+        validators=(username_validator,)
+    )
+    first_name = models.CharField(
+        max_length=USER_LENGTH_LIMIT,
+        verbose_name="Имя"
+    )
+    last_name = models.CharField(
+        max_length=USER_LENGTH_LIMIT,
+        verbose_name="Фамилия"
+    )
+
+    avatar = models.ImageField(
+        upload_to='media/user_images/',
+        blank=True, null=True,
+        verbose_name="Аватар"
+    )
     email = models.EmailField(max_length=EMAIL_LENGTH_LIMIT, unique=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     objects = CustomUserManager()
-    
+
     class Meta:
         db_table = 'user'
         verbose_name = 'Пользователь'

@@ -4,10 +4,23 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from api.recipes.serializers import FavoriteRecipeSerializer, IngredientSerializer, RecipeReadSerializer, RecipeWriteSerializer, TagSerializer
+from api.recipes.serializers import (
+    FavoriteRecipeSerializer,
+    IngredientSerializer,
+    RecipeReadSerializer,
+    RecipeWriteSerializer,
+    TagSerializer
+)
 from api.permissions import IsAdminAuthorOrReadOnly
 from api.filters import IngredientFilter, RecipeFilter
-from recipes.models import Favorite, Ingredient, Recipe, RecipeIngredient, ShoppingList, Tag
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingList,
+    Tag
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from api.pagination import CustorPageNumberPagination
 from rest_framework.response import Response
@@ -90,7 +103,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-   
     @action(
         detail=False,
         methods=['GET'],
@@ -154,7 +166,8 @@ def short_url(request, pk):
     except Exception:
         raise ValidationError(f'Рецепт "{pk}" не существует.')
 
-class IngredientsViewSet(viewsets.ReadOnlyModelViewSet): #OK
+
+class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
@@ -162,17 +175,18 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet): #OK
     filterset_class = IngredientFilter
     search_fields = ('^name',)
 
-    def list(self, request, *args, **kwargs): # Возвращает массив
+    def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-class TagsViewSet(viewsets.ReadOnlyModelViewSet): #OK
+
+class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdminAuthorOrReadOnly,)
 
-    def list(self, request, *args, **kwargs): # Возвращает массив
+    def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data) 
+        return Response(serializer.data)

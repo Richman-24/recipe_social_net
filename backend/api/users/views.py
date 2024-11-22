@@ -3,7 +3,12 @@ from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from api.users.serializers import AvatarSerializer, SubscriberDetailSerializer, SubscriberSerializer, UserSerializer
+from api.users.serializers import (
+    AvatarSerializer,
+    SubscriberDetailSerializer,
+    SubscriberSerializer,
+    UserSerializer
+)
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 
@@ -14,6 +19,7 @@ from rest_framework import status
 from users.models import Follow
 User = get_user_model()
 
+
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -21,19 +27,21 @@ class CustomUserViewSet(UserViewSet):
     pagination_class = CustorPageNumberPagination
 
     @action(
-            methods=('GET',),
-            detail=False,
-            permission_classes=(IsAuthenticated,),
-            url_path='me',)
+        methods=('GET',),
+        detail=False,
+        permission_classes=(IsAuthenticated,),
+        url_path='me',
+    )
     def me(self, request, *args, **kwargs):
         self.get_object = self.get_instance
         return self.retrieve(request, *args, **kwargs)
 
     @action(
-            methods=('PUT',),
-            detail=False,
-            permission_classes=(IsAdminAuthorOrReadOnly,),
-            url_path='me/avatar',)
+        methods=('PUT',),
+        detail=False,
+        permission_classes=(IsAdminAuthorOrReadOnly,),
+        url_path='me/avatar',
+    )
     def avatar(self, request, *args, **kwargs):
         serializer = AvatarSerializer(
             instance=request.user,
@@ -70,7 +78,7 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=('POST',)
-        )
+    )
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)

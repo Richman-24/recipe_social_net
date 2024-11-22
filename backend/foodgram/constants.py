@@ -10,7 +10,7 @@ RECIPE_LENGTH_LIMIT = 256
 INGREDIENT_LENGTH_LIMIT = 128
 UNIT_LENGTH_LIMIT = 64
 
-#на количество единиц
+# на количество единиц
 INGREDIENT_AMOUNT_MIN = 1
 COOKING_TIME_MIN = 1
 
@@ -19,6 +19,6 @@ ERROR_MESSAGE = {
         f'Количество не может быть меньше {INGREDIENT_AMOUNT_MIN}'
     ),
     'time_error': (
-         f'Время не может быть меньше {INGREDIENT_AMOUNT_MIN}'
+        f'Время не может быть меньше {INGREDIENT_AMOUNT_MIN}'
     ),
 }

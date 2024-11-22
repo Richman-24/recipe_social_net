@@ -19,7 +19,7 @@ class SubscriptionTabAdmin(admin.TabularInline):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.select_related('user', 'author')
-    
+
 
 @admin.register(User)
 class UserAdmin(UserAdmin):

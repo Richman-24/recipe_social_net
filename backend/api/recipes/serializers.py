@@ -3,10 +3,19 @@ from rest_framework import serializers
 from api.users.serializers import UserSerializer
 from api.serializers import Base64ImageField
 from users.models import Follow
-from recipes.models import Favorite, Ingredient, Recipe, RecipeIngredient, RecipeTags, ShoppingList, Tag
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    RecipeTags,
+    ShoppingList,
+    Tag
+)
 from foodgram.constants import PER_PAGE_LIMIT
 
-class TagSerializer(serializers.ModelSerializer): #OK
+
+class TagSerializer(serializers.ModelSerializer):
     """Сериализатор для вывода GET list и retrieve тегов"""
 
     class Meta:
@@ -14,20 +23,22 @@ class TagSerializer(serializers.ModelSerializer): #OK
         fields = ('id', 'name', 'slug')
 
 
-class IngredientSerializer(serializers.ModelSerializer): #OK
+class IngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для вывода GET list и retrieve ингредиентов"""
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
 
 
-class RecipeIngredientSerializer(serializers.ModelSerializer): #OK
-    """Сериализатор для развернутого отображения ингредиентов в рецептах list, retrive"""
+class RecipeIngredientSerializer(serializers.ModelSerializer):
+    """Сериализатор для отображения ингредиентов в рецептах list, retrive"""
 
     id = serializers.IntegerField(source='ingredient_id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(source='ingredient.measurement_unit')
-    
+    measurement_unit = serializers.ReadOnlyField(
+        source='ingredient.measurement_unit'
+    )
+
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'name', 'measurement_unit', 'amount')
@@ -35,7 +46,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer): #OK
 
 class RecipeReadSerializer(serializers.ModelSerializer):
     """Сериализатор рецептов. Поддерживает вывод GET list и retrieve."""
-    
+
     tags = TagSerializer(many=True)
     author = UserSerializer()
     ingredients = RecipeIngredientSerializer(
@@ -74,12 +85,14 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     def get_is_in_shopping_cart(self, obj):
         return self.check_user_status(obj, ShoppingList)
 
+
 class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
 
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'amount')
+
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
@@ -113,7 +126,9 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 'Добавьте категорию')
 
         if len(value) != len(set(value)):
-            raise serializers.ValidationError('Такая категория уже зарегистрированна')
+            raise serializers.ValidationError(
+                'Такая категория уже зарегистрированна'
+            )
 
         return value
 

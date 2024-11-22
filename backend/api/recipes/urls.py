@@ -5,7 +5,9 @@ from api.recipes import views
 
 recipe_router = DefaultRouter()
 recipe_router.register('recipes', views.RecipeViewSet, basename='recipes')
-recipe_router.register('ingredients', views.IngredientsViewSet, basename='ingredients')
+recipe_router.register(
+    'ingredients', views.IngredientsViewSet, basename='ingredients'
+)
 recipe_router.register('tags', views.TagsViewSet, basename='tags')
 
 

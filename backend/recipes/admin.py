@@ -2,15 +2,16 @@ from django.contrib import admin
 
 from recipes.models import Recipe, RecipeIngredient, Tag, Ingredient
 
+
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
-    extra = 1 
+    extra = 1
     empty_value_display = '-empty-'
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug":("name",)}
+    prepopulated_fields = {"slug": ("name",)}
     list_display = ["name",]
 
 

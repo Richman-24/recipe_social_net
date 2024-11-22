@@ -16,7 +16,7 @@ DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = [
     host.strip() for host in os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
-    ]
+]
 
 
 INSTALLED_APPS = [
@@ -77,7 +77,7 @@ if USE_SQLITE:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-else:    
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -128,7 +128,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated', 
+        'rest_framework.permissions.IsAuthenticated',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -139,9 +139,6 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': PER_PAGE_LIMIT,
-
-    
-
 }
 
 DJOSER = {

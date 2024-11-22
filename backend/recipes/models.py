@@ -18,7 +18,9 @@ User = get_user_model()
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=TAG_LENGTH_LIMIT, unique=True, verbose_name="Название категории"
+        max_length=TAG_LENGTH_LIMIT,
+        unique=True,
+        verbose_name="Название категории"
     )
     slug = models.SlugField(
         max_length=TAG_LENGTH_LIMIT,
@@ -64,25 +66,43 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(
-        max_length=RECIPE_LENGTH_LIMIT, unique=True, verbose_name="Заголовок рецепта"
+        max_length=RECIPE_LENGTH_LIMIT,
+        unique=True,
+        verbose_name="Заголовок рецепта"
     )
     text = models.TextField(verbose_name="Текстовое описание")
     tags = models.ManyToManyField(to=Tag, verbose_name="Категория")
     ingredients = models.ManyToManyField(
-        to=Ingredient, through="recipes.RecipeIngredient", verbose_name="Ингридиент"
+        to=Ingredient,
+        through="recipes.RecipeIngredient",
+        verbose_name="Ингридиент"
     )
-    author = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="Автор")
+    author = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        verbose_name="Автор"
+    )
     cooking_time = models.PositiveSmallIntegerField(
         validators=(
-            MinValueValidator(COOKING_TIME_MIN, ERROR_MESSAGE.get("time_error")),
+            MinValueValidator(
+                COOKING_TIME_MIN,
+                ERROR_MESSAGE.get("time_error")
+            ),
         ),
         verbose_name="Время приготовления",
     )
     image = models.ImageField(
-        upload_to="media/recipe_images/", verbose_name="Изображение"
+        upload_to="media/recipe_images/",
+        verbose_name="Изображение"
     )
-    is_published = models.BooleanField(default=True, verbose_name="Отображение")
-    pub_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
+    is_published = models.BooleanField(
+        default=True,
+        verbose_name="Отображение"
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата публикации"
+    )
 
     class Meta:
         db_table = "recipe"
@@ -97,10 +117,16 @@ class Recipe(models.Model):
 
 class RecipeTags(models.Model):
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name="tag_list", verbose_name="Recipe"
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name="tag_list",
+        verbose_name="Recipe"
     )
     tag = models.ForeignKey(
-        Tag, on_delete=models.CASCADE, related_name="tag_recipe", verbose_name="Tag"
+        Tag,
+        on_delete=models.CASCADE,
+        related_name="tag_recipe",
+        verbose_name="Tag"
     )
 
 
@@ -109,14 +135,21 @@ class RecipeIngredient(models.Model):
     ingredient = models.ForeignKey(to=Ingredient, on_delete=models.PROTECT)
     amount = models.PositiveSmallIntegerField(
         validators=(
-            MinValueValidator(INGREDIENT_AMOUNT_MIN, ERROR_MESSAGE.get("amount_error")),
+            MinValueValidator(
+                INGREDIENT_AMOUNT_MIN,
+                ERROR_MESSAGE.get("amount_error")
+            ),
         ),
         verbose_name="количество",
     )
 
 
 class Favorite(models.Model):
-    user = models.ForeignKey(to=User, related_name="favorite", on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        to=User,
+        related_name="favorite",
+        on_delete=models.CASCADE
+    )
     recipe = models.ForeignKey(
         to=Recipe, related_name="favorite", on_delete=models.CASCADE
     )

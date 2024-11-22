@@ -110,17 +110,17 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_tags(self, value):
         if not value:
             raise serializers.ValidationError(
-                'Please add tag')
+                'Добавьте категорию')
 
         if len(value) != len(set(value)):
-            raise serializers.ValidationError('Tags must be unique')
+            raise serializers.ValidationError('Такая категория уже зарегистрированна')
 
         return value
 
     def validate_ingredients(self, value):
         if not value:
             raise serializers.ValidationError(
-                'Please add ingredient'
+                'Добавьте ингридиент'
             )
         ingredient_ids = [ingredient['id'] for ingredient in value]
         existing_ingredients = Ingredient.objects.filter(id__in=ingredient_ids)
@@ -129,7 +129,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
                 existing_ingredients.values_list('id', flat=True)
             )
             raise serializers.ValidationError(
-                f'Ingredients with id {missing_ids} do not exist'
+                f'Ингридиента с id {missing_ids} не существует'
             )
         return value
 
@@ -164,12 +164,12 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags = validated_data.get('tags')
         if tags is None:
             raise serializers.ValidationError(
-                {'tags': 'Please add tag'}
+                {'tags': 'Добавьте категорию'}
             )
         ingredients = validated_data.get('ingredients')
         if ingredients is None:
             raise serializers.ValidationError(
-                {'ingredients': 'Please add ingredient'}
+                {'ingredients': 'Добавьте ингридиент'}
             )
         RecipeTags.objects.filter(recipe=instance).delete()
         RecipeIngredient.objects.filter(recipe=instance).delete()
@@ -243,7 +243,7 @@ class SubscriberSerializer(serializers.ModelSerializer):
     def validate_author(self, value):
         if self.context['request'].user == value:
             raise serializers.ValidationError(
-                'You cannot follow yourself')
+                'Нельзя подписаться на себя')
         return value
 
 

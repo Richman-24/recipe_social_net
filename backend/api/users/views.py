@@ -69,42 +69,45 @@ class CustomUserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=('POST', 'DELETE'),
-    )
+        methods=('POST',)
+        )
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
 
         if user == author:
             return Response(
-                {'errors': "You can't (un)subscribe to yourself"},
+                {'errors': "Нельзя подписаться на себя"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if self.request.method == 'POST':
-            if Follow.objects.filter(user=user, author=author).exists():
-                return Response(
-                    {'errors': 'You already follow this user'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            queryset = Follow.objects.create(author=author, user=user)
-            serializer = SubscriberSerializer(
-                queryset, context={'request': request}
+        if Follow.objects.filter(user=user, author=author).exists():
+            return Response(
+                {'errors': 'Вы уже подписаны на этого автора'},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        elif self.request.method == 'DELETE':
-            if not Follow.objects.filter(
-                    user=user, author=author
-            ).exists():
-                return Response(
-                    {'errors': 'You are not subscribed to this user'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+        queryset = Follow.objects.create(author=author, user=user)
+        serializer = SubscriberSerializer(
+            queryset, context={'request': request}
+        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            subscription = get_object_or_404(
-                Follow, user=user, author=author
+    @subscribe.mapping.delete
+    def unsubscribe(self, request, id):
+        user = request.user
+        author = get_object_or_404(User, id=id)
+
+        if not Follow.objects.filter(
+                user=user, author=author
+        ).exists():
+            return Response(
+                {'errors': 'Вы не подписаны на этого автора'},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-            subscription.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        subscription = get_object_or_404(
+            Follow, user=user, author=author
+        )
+        subscription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

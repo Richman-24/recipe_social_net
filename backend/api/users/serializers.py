@@ -53,7 +53,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer): #OK
 
 
 class SubscriberDetailSerializer(serializers.ModelSerializer):
-    """Сериализатор карточки подписчика ???"""
+    """Сериализатор карточки автора для подписчика"""
     
     email = serializers.ReadOnlyField(source='author.email')
     id = serializers.ReadOnlyField(source='author.id')
@@ -118,5 +118,5 @@ class SubscriberSerializer(serializers.ModelSerializer):
     def validate_author(self, value):
         if self.context['request'].user == value:
             raise serializers.ValidationError(
-                'You cannot follow yourself')
+                'Нельзя подписаться на себя')
         return value

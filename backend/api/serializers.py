@@ -6,7 +6,7 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-class Base64ImageField(serializers.ImageField): #OK
+class Base64ImageField(serializers.ImageField):
 
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith('data:image'):

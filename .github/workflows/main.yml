@@ -155,7 +155,7 @@ jobs:
 
   failure_send_message:
     runs-on: ubuntu-latest
-    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    if: ${{ always() && contains(needs.*.result, 'failure') }} and github.ref == 'refs/heads/main'
     needs:
       - build_backend_and_push_to_docker_hub
       - build_frontend_and_push_to_docker_hub

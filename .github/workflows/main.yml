@@ -169,6 +169,6 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             Деплой "${{ github.repository }}" провалился!  
-          Автор: ${{ github.actor }}
-          Сообщение коммита: ${{ github.event.head_commit.message }}
-          Ссылка на коммит: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            Автор: ${{ github.actor }}
+            Сообщение коммита: ${{ github.event.head_commit.message }}
+            Ссылка на коммит: https://github.com/${{ github.repository }}/commit/${{ github.sha }}

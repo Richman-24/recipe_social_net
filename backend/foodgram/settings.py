@@ -18,6 +18,10 @@ ALLOWED_HOSTS = [
     host.strip() for host in os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://foodgram-rm24.zapto.org',
+    'https://www.foodgram-rm24.zapto.org',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',

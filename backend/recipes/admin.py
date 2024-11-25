@@ -12,7 +12,7 @@ class RecipeIngredientInline(admin.TabularInline):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ["name",]
+    list_display = ["name"]
 
 
 @admin.register(Ingredient)

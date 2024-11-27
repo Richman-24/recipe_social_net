@@ -146,7 +146,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
             )
         return value
-    
+
     def to_representation(self, instance):
         serializer = RecipeReadSerializer(
             instance, context={'request': self.context.get('request')}

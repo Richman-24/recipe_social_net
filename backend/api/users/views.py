@@ -7,7 +7,6 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from api.pagination import CustorPageNumberPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.users.serializers import (AvatarSerializer,
                                    SubscriberDetailSerializer,
@@ -21,7 +20,6 @@ class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    pagination_class = CustorPageNumberPagination
 
     @action(
         methods=('GET',),

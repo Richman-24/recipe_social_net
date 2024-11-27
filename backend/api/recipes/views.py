@@ -11,7 +11,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
-from api.pagination import CustorPageNumberPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.recipes.serializers import (FavoriteRecipeSerializer,
                                      IngredientSerializer,
@@ -23,7 +22,6 @@ from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    pagination_class = CustorPageNumberPagination
     permission_classes = (IsAuthorOrReadOnly, )
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter

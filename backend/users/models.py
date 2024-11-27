@@ -1,13 +1,9 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db import models
 
-from foodgram.constants import (
-    USER_LENGTH_LIMIT,
-    EMAIL_LENGTH_LIMIT
-)
+from foodgram.constants import EMAIL_LENGTH_LIMIT, USER_LENGTH_LIMIT
 from users.validators import reserved_names_validator
-
 
 username_validator = UnicodeUsernameValidator()
 

@@ -4,38 +4,27 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_GET
-
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import CustorPageNumberPagination
-from api.permissions import IsAdminAuthorOrReadOnly
-from api.recipes.serializers import (
-    FavoriteRecipeSerializer,
-    IngredientSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    TagSerializer
-)
-
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    ShoppingList,
-    Tag
-)
+from api.permissions import IsAuthorOrReadOnly
+from api.recipes.serializers import (FavoriteRecipeSerializer,
+                                     IngredientSerializer,
+                                     RecipeReadSerializer,
+                                     RecipeWriteSerializer, TagSerializer)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingList, Tag)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     pagination_class = CustorPageNumberPagination
-    permission_classes = (IsAdminAuthorOrReadOnly, )
+    permission_classes = (IsAuthorOrReadOnly, )
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
@@ -185,7 +174,7 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAdminAuthorOrReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly,)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

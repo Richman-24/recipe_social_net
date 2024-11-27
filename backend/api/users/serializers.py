@@ -1,11 +1,11 @@
+from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
 
-from api.serializers import Base64ImageField
+from drf_extra_fields.fields import Base64ImageField
+from foodgram.constants import PER_PAGE_LIMIT
 from recipes.models import Recipe
 from users.models import Follow
-from foodgram.constants import PER_PAGE_LIMIT
 
 User = get_user_model()
 

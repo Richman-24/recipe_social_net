@@ -1,22 +1,19 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import action
-from api.users.serializers import (
-    AvatarSerializer,
-    SubscriberDetailSerializer,
-    SubscriberSerializer,
-    UserSerializer
-)
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
+from rest_framework.response import Response
 
-from api.permissions import IsAdminAuthorOrReadOnly
 from api.pagination import CustorPageNumberPagination
-from rest_framework import status
-
+from api.permissions import IsAuthorOrReadOnly
+from api.users.serializers import (AvatarSerializer,
+                                   SubscriberDetailSerializer,
+                                   SubscriberSerializer, UserSerializer)
 from users.models import Follow
+
 User = get_user_model()
 
 
@@ -39,7 +36,7 @@ class CustomUserViewSet(UserViewSet):
     @action(
         methods=('PUT',),
         detail=False,
-        permission_classes=(IsAdminAuthorOrReadOnly,),
+        permission_classes=(IsAuthorOrReadOnly,),
         url_path='me/avatar',
     )
     def avatar(self, request, *args, **kwargs):

@@ -1,18 +1,12 @@
 from rest_framework import serializers
 
+from drf_extra_fields.fields import Base64ImageField
 from api.users.serializers import UserSerializer
-from api.serializers import Base64ImageField
-from users.models import Follow
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    RecipeTags,
-    ShoppingList,
-    Tag
-)
+
 from foodgram.constants import PER_PAGE_LIMIT
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            RecipeTags, ShoppingList, Tag)
+from users.models import Follow
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -104,10 +98,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         many=True,
         label='Ingredients',
     )
-    image = Base64ImageField(
-        allow_null=True,
-        label='images'
-    )
+    image = Base64ImageField(label='images')
 
     class Meta:
         model = Recipe
@@ -148,6 +139,14 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate_image(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                'Добавьте изображение.'
+
+            )
+        return value
+    
     def to_representation(self, instance):
         serializer = RecipeReadSerializer(
             instance, context={'request': self.context.get('request')}

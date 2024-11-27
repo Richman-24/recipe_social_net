@@ -1,7 +1,7 @@
 from django.urls import include, path
 
-from api.users.urls import users_urls
 from api.recipes.urls import recipe_urls
+from api.users.urls import users_urls
 
 app_name = 'api'
 

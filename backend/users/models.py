@@ -1,13 +1,9 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.db import models
 
-from foodgram.constants import (
-    USER_LENGTH_LIMIT,
-    EMAIL_LENGTH_LIMIT
-)
+from foodgram.constants import EMAIL_LENGTH_LIMIT, USER_LENGTH_LIMIT
 from users.validators import reserved_names_validator
-
 
 username_validator = UnicodeUsernameValidator()
 
@@ -15,7 +11,7 @@ username_validator = UnicodeUsernameValidator()
 class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-    
+
     username = models.CharField(
         max_length=USER_LENGTH_LIMIT,
         unique=True,
@@ -36,7 +32,6 @@ class User(AbstractUser):
         verbose_name="Аватар"
     )
     email = models.EmailField(max_length=EMAIL_LENGTH_LIMIT, unique=True)
-    
 
     class Meta:
         db_table = 'user'

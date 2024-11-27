@@ -1,44 +1,25 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 from foodgram.constants import (
     USER_LENGTH_LIMIT,
     EMAIL_LENGTH_LIMIT
 )
+from users.validators import reserved_names_validator
+
 
 username_validator = UnicodeUsernameValidator()
 
 
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        """Создание суперпользователя с email вместо username."""
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
-
-        return self.create_user(email, password, **extra_fields)
-
-
 class User(AbstractUser):
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    
     username = models.CharField(
         max_length=USER_LENGTH_LIMIT,
         unique=True,
-        validators=(username_validator,)
+        validators=(username_validator, reserved_names_validator)
     )
     first_name = models.CharField(
         max_length=USER_LENGTH_LIMIT,
@@ -55,11 +36,7 @@ class User(AbstractUser):
         verbose_name="Аватар"
     )
     email = models.EmailField(max_length=EMAIL_LENGTH_LIMIT, unique=True)
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-
-    objects = CustomUserManager()
+    
 
     class Meta:
         db_table = 'user'
@@ -98,6 +75,7 @@ class Follow(models.Model):
                 name='check_follower_author',
             ),
         ]
+        ordering = ('author__username',)
 
     def __str__(self):
-        return f'Подписчик {self.user}'
+        return f'{self.user} подписался на {self.author}'

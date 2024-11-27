@@ -21,4 +21,7 @@ ERROR_MESSAGE = {
     'time_error': (
         f'Время не может быть меньше {INGREDIENT_AMOUNT_MIN}'
     ),
+    'reserved_name_error': (
+        'Данное имя пользователя занято. Выберите другое.'
+    ),
 }

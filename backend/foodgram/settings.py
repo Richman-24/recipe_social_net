@@ -157,3 +157,5 @@ DJOSER = {
         'user_create': 'api.users.serializers.CustomUserCreateSerializer',
     }
 }
+
+RESERVED_USERNAMES = ('me',)

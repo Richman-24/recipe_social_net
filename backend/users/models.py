@@ -15,7 +15,7 @@ username_validator = UnicodeUsernameValidator()
 class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-    
+
     username = models.CharField(
         max_length=USER_LENGTH_LIMIT,
         unique=True,
@@ -36,7 +36,6 @@ class User(AbstractUser):
         verbose_name="Аватар"
     )
     email = models.EmailField(max_length=EMAIL_LENGTH_LIMIT, unique=True)
-    
 
     class Meta:
         db_table = 'user'

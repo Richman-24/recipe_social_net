@@ -14,6 +14,11 @@ UNIT_LENGTH_LIMIT = 64
 INGREDIENT_AMOUNT_MIN = 1
 COOKING_TIME_MIN = 1
 
+
+# отображение
+ADMIN_TEXT_LIMIT = 20
+
+
 ERROR_MESSAGE = {
     'amount_error': (
         f'Количество не может быть меньше {INGREDIENT_AMOUNT_MIN}'

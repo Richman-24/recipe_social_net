@@ -12,7 +12,8 @@ from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnly
-from api.recipes import serializers
+from api.recipes import serializers as recipe_serial
+from api.users import serializers as user_serial
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingList, Tag)
 
@@ -33,8 +34,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'get-link'):
-            return serializers.RecipeReadSerializer
-        return serializers.RecipeWriteSerializer
+            return recipe_serial.RecipeReadSerializer
+        return recipe_serial.RecipeWriteSerializer
 
     @action(
         detail=True,
@@ -68,7 +69,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         ShoppingList.objects.create(recipe=recipe, user=user)
-        serializer = serializers.FavoriteRecipeSerializer(
+        serializer = user_serial.ShortRecipeSerializer(
             recipe, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -123,7 +124,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         Favorite.objects.create(recipe=recipe, user=user)
-        serializer = serializers.FavoriteRecipeSerializer(
+        serializer = user_serial.ShortRecipeSerializer(
             recipe, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -154,7 +155,7 @@ def short_url(request, pk):
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = serializers.IngredientSerializer
+    serializer_class = recipe_serial.IngredientSerializer
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
@@ -168,7 +169,7 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    serializer_class = serializers.TagSerializer
+    serializer_class = recipe_serial.TagSerializer
     permission_classes = (IsAuthorOrReadOnly,)
 
     def list(self, request, *args, **kwargs):

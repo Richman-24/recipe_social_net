@@ -21,6 +21,14 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit')
 
 
+class RecipeIngredientCreateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+
+    class Meta:
+        model = RecipeIngredient
+        fields = ('id', 'amount')
+
+
 class RecipeIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор для отображения ингредиентов в рецептах list, retrive"""
 
@@ -33,22 +41,6 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ('id', 'name', 'measurement_unit', 'amount')
-
-
-class RecipeIngredientWriteSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
-
-    class Meta:
-        model = RecipeIngredient
-        fields = ('id', 'amount')
-
-
-class FavoriteRecipeSerializer(serializers.ModelSerializer):
-    image = Base64ImageField()
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -99,7 +91,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         many=True,
         label='Tags',
     )
-    ingredients = RecipeIngredientWriteSerializer(
+    ingredients = RecipeIngredientCreateSerializer(
         many=True,
         label='Ingredients',
     )

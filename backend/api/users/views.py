@@ -61,7 +61,7 @@ class UserViewSet(UserViewSet):
         user = request.user
         queryset = user.follower.all()
         pages = self.paginate_queryset(queryset)
-        
+
         serializer = serializers.SubscriberDetailSerializer(
             pages,
             many=True,

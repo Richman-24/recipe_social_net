@@ -15,6 +15,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     is_subscribed = serializers.SerializerMethodField()
@@ -52,6 +53,7 @@ class UserCreateSerializer(UserCreateSerializer):
             'password',
         )
 
+
 class SubscriberSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -67,7 +69,7 @@ class SubscriberSerializer(serializers.ModelSerializer):
                 'Нельзя подписаться на себя')
         return value
 
-    
+
 class SubscriberDetailSerializer(serializers.ModelSerializer):
     """Сериализатор карточки автора для подписчика"""
 
@@ -122,4 +124,3 @@ class AvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('avatar',)
-

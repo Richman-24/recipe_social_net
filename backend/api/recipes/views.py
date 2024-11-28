@@ -12,10 +12,7 @@ from rest_framework.response import Response
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorOrReadOnly
-from api.recipes.serializers import (FavoriteRecipeSerializer,
-                                     IngredientSerializer,
-                                     RecipeReadSerializer,
-                                     RecipeWriteSerializer, TagSerializer)
+from api.recipes import serializers
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingList, Tag)
 
@@ -36,8 +33,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve', 'get-link'):
-            return RecipeReadSerializer
-        return RecipeWriteSerializer
+            return serializers.RecipeReadSerializer
+        return serializers.RecipeWriteSerializer
 
     @action(
         detail=True,
@@ -71,7 +68,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         ShoppingList.objects.create(recipe=recipe, user=user)
-        serializer = FavoriteRecipeSerializer(
+        serializer = serializers.FavoriteRecipeSerializer(
             recipe, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -126,7 +123,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         Favorite.objects.create(recipe=recipe, user=user)
-        serializer = FavoriteRecipeSerializer(
+        serializer = serializers.FavoriteRecipeSerializer(
             recipe, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -157,7 +154,7 @@ def short_url(request, pk):
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
+    serializer_class = serializers.IngredientSerializer
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
@@ -171,7 +168,7 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    serializer_class = TagSerializer
+    serializer_class = serializers.TagSerializer
     permission_classes = (IsAuthorOrReadOnly,)
 
     def list(self, request, *args, **kwargs):

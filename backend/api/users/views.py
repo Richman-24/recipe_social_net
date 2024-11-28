@@ -8,17 +8,15 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 from api.permissions import IsAuthorOrReadOnly
-from api.users.serializers import (AvatarSerializer,
-                                   SubscriberDetailSerializer,
-                                   SubscriberSerializer, UserSerializer)
+from api.users import serializers
 from users.models import Follow
 
 User = get_user_model()
 
 
-class CustomUserViewSet(UserViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserViewSet(UserViewSet):
+    queryset = User.objects.select_related()
+    serializer_class = serializers.UserSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @action(
@@ -38,7 +36,7 @@ class CustomUserViewSet(UserViewSet):
         url_path='me/avatar',
     )
     def avatar(self, request, *args, **kwargs):
-        serializer = AvatarSerializer(
+        serializer = serializers.AvatarSerializer(
             instance=request.user,
             data=request.data,
         )
@@ -63,7 +61,8 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         queryset = user.follower.all()
         pages = self.paginate_queryset(queryset)
-        serializer = SubscriberDetailSerializer(
+        
+        serializer = serializers.SubscriberDetailSerializer(
             pages,
             many=True,
             context={'request': request}
@@ -78,22 +77,12 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(User, id=id)
 
-        if user == author:
-            return Response(
-                {'errors': "Нельзя подписаться на себя"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if Follow.objects.filter(user=user, author=author).exists():
-            return Response(
-                {'errors': 'Вы уже подписаны на этого автора'},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        queryset = Follow.objects.create(author=author, user=user)
-        serializer = SubscriberSerializer(
-            queryset, context={'request': request}
+        serializer = serializers.SubscriberSerializer(
+            data={'user': user.id, 'author': author.id},
+            context={'request': request}
         )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @subscribe.mapping.delete
@@ -101,14 +90,11 @@ class CustomUserViewSet(UserViewSet):
         user = request.user
         author = get_object_or_404(User, id=id)
 
-        if not Follow.objects.filter(
-                user=user, author=author
-        ).exists():
+        if not user.follower.filter(author=author).exists():
             return Response(
                 {'errors': 'Вы не подписаны на этого автора'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
         subscription = get_object_or_404(
             Follow, user=user, author=author
         )

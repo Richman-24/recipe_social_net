@@ -1,14 +1,19 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from drf_extra_fields.fields import Base64ImageField
 from foodgram.constants import PER_PAGE_LIMIT
 from recipes.models import Recipe
 from users.models import Follow
 
 User = get_user_model()
 
+class ShortRecipeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -26,12 +31,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return request.user.follower.filter(author=obj).exists()
+        return (
+            request is not None
+            and request.user.is_authenticated
+            and request.user.follower.filter(author=obj).exists()
+        )
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class UserCreateSerializer(UserCreateSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -45,13 +52,22 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             'password',
         )
 
+class SubscriberSerializer(serializers.ModelSerializer):
 
-class ShortRecipeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        model = Follow
+        fields = '__all__'
 
+    def to_representation(self, instance):
+        return SubscriberDetailSerializer(instance, context=self.context).data
 
+    def validate_author(self, value):
+        if self.context['request'].user == value:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на себя')
+        return value
+
+    
 class SubscriberDetailSerializer(serializers.ModelSerializer):
     """Сериализатор карточки автора для подписчика"""
 
@@ -107,18 +123,3 @@ class AvatarSerializer(serializers.ModelSerializer):
         model = User
         fields = ('avatar',)
 
-
-class SubscriberSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Follow
-        fields = '__all__'
-
-    def to_representation(self, instance):
-        return SubscriberDetailSerializer(instance, context=self.context).data
-
-    def validate_author(self, value):
-        if self.context['request'].user == value:
-            raise serializers.ValidationError(
-                'Нельзя подписаться на себя')
-        return value

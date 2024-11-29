@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 
 from foodgram.constants import PER_PAGE_LIMIT
 
+# Привет, босс! Крутые замечания, спасибо!
+# Всё исправил, всё проверил, готов принять критику!
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 

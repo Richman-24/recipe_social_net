@@ -1,6 +1,6 @@
 [![Main foodgran workflow](https://github.com/Richman-24/foodgram/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/Richman-24/foodgram/actions/workflows/main.yml)
 
-# Foodgram
+### <br>➜ https://foodgram-rm24.zapto.org/</br>
 
 "Foodgram" - это инновационный веб-сайт для кулинарных энтузиастов, предоставляющий уникальную платформу для обмена и открытия рецептов. Здесь пользователи могут делиться своими кулинарными шедеврами, находить вдохновение в рецептах других участников и создавать собственные кулинарные коллекции.
 
@@ -9,7 +9,6 @@
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat-square&logo=Python)](https://www.python.org)
 [![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/)
 [![Django REST Framework](https://img.shields.io/badge/-Django%20REST%20Framework-464646?style=flat-square&logo=Django%20REST%20Framework)](https://www.django-rest-framework.org)
-[![JSON](https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white)]
 [![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-464646?style=flat-square&logo=PostgreSQL)](https://www.postgresql.org)
 [![gunicorn](https://img.shields.io/badge/-gunicorn-464646?style=flat-square&logo=gunicorn)](https://gunicorn.org)
 [![Nginx](https://img.shields.io/badge/-NGINX-464646?style=flat-square&logo=NGINX)](https://nginx.org/ru)
@@ -27,14 +26,67 @@
 
 
 ## Инструкции по запуску проекта:
-  1. Клонируйте репо, создайте в корне файл зависимостей .env(по примеру .env.example)
-  2. Создайте секреты для git actions (по примеру в .secrets.example)
-  3. Запуште код в ветку main и она она развернётся на сервере
-  
-  ### Совет для новичков:
-     - найдите более подробный readme у кого-нибудь другого. Таким проектам на ГХ имя ЛЕГИОН
-  ### Совет для бывалых:
-     - вы лучше меня знаете что делать
+1. **Клонировать репозиторий**:
+   ```bash
+   git clone git@github.com:icek888/foodgram.git
+   ```
+
+2. **Перейти в директорию проекта**:
+   ```bash
+   cd foodgram/backend/
+   ```
+
+3. **Создать и активировать виртуальное окружение** (для Windows):
+   ```bash
+   python -m venv venv
+   source venv/Scripts/activate
+   ```
+
+4. **Установить зависимости**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   
+5. **Создать файл `.env`** в корне проекта с настройками (по примеру .env.example)
+
+6. **Запустить проект с помощью Docker**:
+   ```bash
+   docker compose -f docker-compose.production.yml up -d
+   ```
+
+7. **Выполнить миграции и собрать статику**:
+   ```bash
+   docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+   docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --no-input
+   ```
+
+8. **Создать суперпользователя**:
+   ```bash
+   docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
+   ```
+
+
+## Примеры API-запросов
+
+Примеры запросов, доступных через API:
+
+- **Получение списка рецептов**:
+  ```http
+  GET /api/recipes/
+  ```
+
+- **Добавление рецепта в избранное**:
+  ```http
+  POST /api/recipes/{id}/favorite/
+  Headers:
+    Authorization: Bearer <токен>
+  ```
+
+- **Получение списка ингредиентов**:
+  ```http
+  GET /api/ingredients/
+  ```
+
 
 ## Вклад
 Мы будем рады, если вы решите внести свой вклад в развитие Foodgram! Пожалуйста, создавайте pull-запросы и делитесь идеями.

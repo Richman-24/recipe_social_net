@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from recipes.models import Recipe, RecipeIngredient, Tag, Ingredient
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
-    extra = 1
     empty_value_display = '-empty-'
+    min_num = 1
 
 
 @admin.register(Tag)
@@ -23,6 +23,6 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ["name", "author", 'pub_date', 'is_published']
-    search_fields = ('name', 'author')
+    search_fields = ('name', 'author__name')
 
     inlines = [RecipeIngredientInline]

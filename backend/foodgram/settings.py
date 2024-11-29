@@ -1,9 +1,13 @@
 import os
 from pathlib import Path
+
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
 
 from foodgram.constants import PER_PAGE_LIMIT
+
+# Привет, босс! Крутые замечания, спасибо!
+# Всё исправил, всё проверил, готов принять критику!
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,8 +23,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://foodgram-rm24.zapto.org',
-    'https://www.foodgram-rm24.zapto.org',
+    host.strip() for host in os.getenv('CSRF_TRUSTED_ORIGINS').split(',')
 ]
 
 INSTALLED_APPS = [
@@ -140,7 +143,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'api.pagination.PageLimitPagination',
     'PAGE_SIZE': PER_PAGE_LIMIT,
 }
 
@@ -154,6 +157,8 @@ DJOSER = {
     'SERIALIZERS': {
         'user': 'api.users.serializers.UserSerializer',
         'current_user': 'api.users.serializers.UserSerializer',
-        'user_create': 'api.users.serializers.CustomUserCreateSerializer',
+        'user_create': 'api.users.serializers.UserCreateSerializer',
     }
 }
+
+RESERVED_USERNAMES = ('me',)

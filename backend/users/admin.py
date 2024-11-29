@@ -10,15 +10,8 @@ User = get_user_model()
 class SubscriptionTabAdmin(admin.TabularInline):
     model = Follow
     list_display = ('id', 'user', 'author')
-    search_fields = ('user', 'author')
     fk_name = 'user'
-    verbose_name = 'Подписка'
-    verbose_name_plural = 'Подписки'
     extra = 0
-
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.select_related('user', 'author')
 
 
 @admin.register(User)
@@ -31,10 +24,7 @@ class UserAdmin(UserAdmin):
         'last_name',
     )
     list_filter = ('email', 'first_name')
+    search_fields = ('username', 'email')
     empty_value_display = '-empty-'
 
     inlines = (SubscriptionTabAdmin,)
-
-    def get_inline_instances(self, request, obj=None, **kwargs):
-        self.parent_object = obj
-        return super().get_inline_instances(request, obj, **kwargs)

@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from api.users import views
 
 user_router = DefaultRouter()
-user_router.register('', views.CustomUserViewSet, basename='users')
+user_router.register('', views.UserViewSet, basename='users')
 
 
 users_urls = [

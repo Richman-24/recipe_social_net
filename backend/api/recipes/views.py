@@ -165,8 +165,19 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = IngredientFilter
     search_fields = ('^name',)
 
+    # Я бы рад, босс, но без этого не отображаются тэги, почему-то.
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = recipe_serial.TagSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

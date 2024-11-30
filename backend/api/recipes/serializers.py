@@ -44,7 +44,7 @@ class RecipeIngredientCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredientSerializer(serializers.ModelSerializer):
-    """Сериализатор для отображения ингредиентов в рецептах"""
+    """Сериализатор для отображения ингредиентов в рецептах."""
 
     id = serializers.IntegerField(source='ingredient_id')
     name = serializers.ReadOnlyField(source='ingredient.name')
@@ -58,7 +58,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
-    """Сериализатор чтения рецептов"""
+    """Сериализатор чтения рецептов."""
 
     tags = TagSerializer(many=True)
     author = UserSerializer()
@@ -100,7 +100,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
-    """Сериализатор создания и обновления рецептов"""
+    """Сериализатор создания и обновления рецептов."""
 
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
@@ -167,13 +167,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
 
     def create_ingredients(self, ingredients, recipe):
         RecipeIngredient.objects.bulk_create(
-            [
-                RecipeIngredient(
-                    recipe=recipe,
-                    ingredient_id=item['id'],
-                    amount=item['amount']
-                ) for item in ingredients
-            ]
+            RecipeIngredient(
+                recipe=recipe,
+                ingredient_id=item['id'],
+                amount=item['amount']
+            ) for item in ingredients
         )
 
     def create(self, validated_data):

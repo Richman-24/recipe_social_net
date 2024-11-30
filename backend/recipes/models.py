@@ -128,6 +128,9 @@ class RecipeTags(models.Model):
         verbose_name_plural = "Тэги рецепта"
         ordering = ("tag__name",)
 
+    def __str__(self) -> str:
+        return f'Связь {self.tag} - {self.recipe}'
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
@@ -155,6 +158,9 @@ class RecipeIngredient(models.Model):
         default_related_name = "ingredients_in_recipe"
         ordering = ("recipe__name",)
 
+    def __str__(self) -> str:
+        return f'{self.amount} {self.ingredient}'
+
 
 class BaseAdditionalModel(models.Model):
     user = models.ForeignKey(
@@ -174,7 +180,7 @@ class BaseAdditionalModel(models.Model):
 
 
 class Favorite(BaseAdditionalModel):
-    class Meta:
+    class Meta(BaseAdditionalModel.Meta):
         verbose_name = "Избранное"
         verbose_name_plural = "Избранные"
         default_related_name = "favorites"
@@ -184,9 +190,12 @@ class Favorite(BaseAdditionalModel):
             ),
         )
 
+    def __str__(self) -> str:
+        return f'{self.user} - {self.recipe}'
+
 
 class ShoppingList(BaseAdditionalModel):
-    class Meta:
+    class Meta(BaseAdditionalModel.Meta):
         verbose_name = "Список покупок"
         verbose_name_plural = "Списоки покупок"
         default_related_name = "shopping_lists"
@@ -195,3 +204,6 @@ class ShoppingList(BaseAdditionalModel):
                 fields=("user", "recipe"), name="unique_shopping_list_recipe"
             ),
         )
+
+    def __str__(self) -> str:
+        return f'{self.user} - {self.recipe}'

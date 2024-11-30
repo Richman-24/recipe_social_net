@@ -56,10 +56,11 @@ class UserCreateSerializer(UserCreateSerializer):
 class SubscriberSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ("id", "user", "author")
+        fields = ("user", "author")
 
     def to_representation(self, instance):
-        return SubscriberDetailSerializer(instance, context=self.context).data
+        author = instance.author
+        return SubscriberDetailSerializer(author, context=self.context).data
 
     def validate_author(self, value):
         if self.context['request'].user.id == value.id:
@@ -71,14 +72,8 @@ class SubscriberSerializer(serializers.ModelSerializer):
 class SubscriberDetailSerializer(UserSerializer):
     """Сериализатор карточки автора для подписчика."""
 
-    email = serializers.ReadOnlyField(source='author.email')
-    id = serializers.ReadOnlyField(source='author.id')
-    username = serializers.ReadOnlyField(source='author.username')
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.ReadOnlyField(source='author.following.count')
-    avatar = Base64ImageField(source='author.avatar')
+    recipes_count = serializers.ReadOnlyField(source='following.count')
 
     class Meta:
         model = User
@@ -86,15 +81,16 @@ class SubscriberDetailSerializer(UserSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit = request.GET.get('recipes_limit', PER_PAGE_LIMIT)
-        try:
-            limit = int(limit)
-        except ValueError:
-            raise ValueError("limit должен быть целым числом")
+        limit = str(request.GET.get('recipes_limit', PER_PAGE_LIMIT))
+        response = obj.recipes.all()
+        response = Recipe.objects.filter(author=obj)
+        if limit and limit.isdigit():
+            response = response[:int(limit)]
+
         return ShortRecipeSerializer(
-            obj.author.recipes.all()[:limit],
+            response[:int(limit)],
             many=True,
-            context={'request': request},
+            read_only=True
         ).data
 
 

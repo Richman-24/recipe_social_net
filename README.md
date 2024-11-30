@@ -65,6 +65,10 @@
    docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
    ```
 
+8. **Наполнить базу данных предустановленными данными**:
+   ```bash
+   docker compose -f infra/docker-compose.production.yml exec backend python manage.py loaddata data/fixtures.json
+   ```
 
 ## Примеры API-запросов
 
@@ -87,6 +91,10 @@
   GET /api/ingredients/
   ```
 
+## Документация к API по ссылке:
+ ```http
+  http://<your.server.address>/api/docs/
+  ```
 
 ## Вклад
 Мы будем рады, если вы решите внести свой вклад в развитие Foodgram! Пожалуйста, создавайте pull-запросы и делитесь идеями.

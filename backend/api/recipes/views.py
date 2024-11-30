@@ -1,3 +1,5 @@
+from io import BytesIO
+
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.http import FileResponse
@@ -5,13 +7,11 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_GET
 from django_filters.rest_framework import DjangoFilterBackend
-from io import BytesIO
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import (
     AllowAny,
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly
+    IsAuthenticated
 )
 from rest_framework.response import Response
 
@@ -42,6 +42,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
             f'({ingredient["ingredient__measurement_unit"]})'
             for ingredient in ingredients
         )
+
+    @staticmethod
+    def create_file_response(shopping_list_text):
+        """Создает и возвращает ответ с файлом для скачивания."""
+        buffer = BytesIO()
+        buffer.write(shopping_list_text.encode('utf-8'))
+        buffer.seek(0)
+
+        response = FileResponse(buffer, content_type='text/plain')
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_cart.txt"'
+        )
+        return response
 
     @staticmethod
     def add_to_list(request, pk, model, serializer_class):
@@ -121,15 +134,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(sum=Sum('amount'))
         )
         shopping_list_text = self.shopping_list_to_txt(ingredients)
-
-        buffer = BytesIO()
-        buffer.write(shopping_list_text.encode('utf-8'))
-        buffer.seek(0)
-
-        response = FileResponse(buffer, content_type='text/plain')
-        response['Content-Disposition'] = \
-            'attachment; filename="shopping_cart.txt"'
-        return response
+        return self.create_file_response(shopping_list_text)
 
     @action(
         detail=True,
@@ -164,20 +169,11 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     search_fields = ('^name',)
-
-    # Я бы рад, босс, но без этого не отображаются тэги, почему-то.
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    pagination_class = None
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = recipe_serial.TagSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    permission_classes = (AllowAny,)
+    pagination_class = None

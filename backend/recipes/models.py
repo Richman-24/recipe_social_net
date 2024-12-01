@@ -177,7 +177,7 @@ class BaseAdditionalModel(models.Model):
     class Meta:
         abstract = True
         ordering = ('user__username',)
-    
+
     def __str__(self) -> str:
         return f'{self.user} - {self.recipe}'
 

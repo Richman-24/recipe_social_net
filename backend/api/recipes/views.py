@@ -47,7 +47,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def create_file_response(ingredients):
         """Создает и возвращает ответ с файлом для скачивания."""
         shopping_list_text = RecipeViewSet.shopping_list_to_txt(ingredients)
-        
+
         buffer = BytesIO()
         buffer.write(shopping_list_text.encode('utf-8'))
         buffer.seek(0)
@@ -135,7 +135,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .values('ingredient__name', 'ingredient__measurement_unit')
             .annotate(sum=Sum('amount'))
         )
-        
+
         return self.create_file_response(ingredients)
 
     @action(

@@ -83,12 +83,12 @@ class SubscriberDetailSerializer(UserSerializer):
         request = self.context.get('request')
         limit = str(request.GET.get('recipes_limit', PER_PAGE_LIMIT))
         response = obj.recipes.all()
-        response = Recipe.objects.filter(author=obj)
+        
         if limit and limit.isdigit():
             response = response[:int(limit)]
 
         return ShortRecipeSerializer(
-            response[:int(limit)],
+            response,
             many=True,
             read_only=True
         ).data

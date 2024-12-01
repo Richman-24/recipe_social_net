@@ -93,7 +93,7 @@
 
 ## Документация к API по ссылке:
  ```http
-  http://<your.server.address>/api/docs/
+  https://foodgram-rm24.zapto.org/api/docs
   ```
 
 ## Вклад

@@ -11,7 +11,7 @@ urlpatterns = [
     path('', include(users_urls)),
     path('', include(recipe_urls)),
     path('docs/',
-         TemplateView.as_view(template_name='docs/redoc.html'),
+         TemplateView.as_view(template_name='redoc.html'),
          name='redoc'
          ),
 ]

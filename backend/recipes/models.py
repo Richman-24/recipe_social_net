@@ -177,6 +177,9 @@ class BaseAdditionalModel(models.Model):
     class Meta:
         abstract = True
         ordering = ('user__username',)
+    
+    def __str__(self) -> str:
+        return f'{self.user} - {self.recipe}'
 
 
 class Favorite(BaseAdditionalModel):
@@ -190,9 +193,6 @@ class Favorite(BaseAdditionalModel):
             ),
         )
 
-    def __str__(self) -> str:
-        return f'{self.user} - {self.recipe}'
-
 
 class ShoppingList(BaseAdditionalModel):
     class Meta(BaseAdditionalModel.Meta):
@@ -204,6 +204,3 @@ class ShoppingList(BaseAdditionalModel):
                 fields=("user", "recipe"), name="unique_shopping_list_recipe"
             ),
         )
-
-    def __str__(self) -> str:
-        return f'{self.user} - {self.recipe}'

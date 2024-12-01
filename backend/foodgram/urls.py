@@ -10,6 +10,11 @@ from api.recipes.views import short_url
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('api.urls', namespace='api')),
+    path(
+        'redoc/',
+        TemplateView.as_view(template_name='redoc.html'),
+        name='redoc'
+    ),
     path('s/<int:pk>/', short_url, name='short_url')
 ]
 
@@ -20,11 +25,6 @@ if settings.DEBUG:
     )
 
     urlpatterns += [
-        path(
-            "redoc/",
-            TemplateView.as_view(template_name="redoc.html"),
-            name="redoc"
-        ),
         path(
             "redoc/openapi-schema.yml",
             serve,

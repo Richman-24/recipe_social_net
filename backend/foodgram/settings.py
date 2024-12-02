@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 
 from foodgram.constants import PER_PAGE_LIMIT
 
-# Готово, босс! Креденсы поставил как и условились.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -59,7 +58,7 @@ ROOT_URLCONF = 'foodgram.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR.parent, 'docs')],
+        'DIRS': [], # os.path.join(BASE_DIR, 'api', 'docs')
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
